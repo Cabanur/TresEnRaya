@@ -1,3 +1,4 @@
+package es.cabanur.tresenraya;
 import java.io.Serializable;
 
 
@@ -6,12 +7,11 @@ public class Player implements Serializable {
 	private static final long serialVersionUID = 201410030500L;
 	private String name;
 	private GamePieceColor color;
-	private GameBoard board;
-
-	public Player(String name, Game game, GamePieceColor color) {
+	private Game game;
+	
+	public Player(String name, GamePieceColor color) {
 		this.name = name;
 		this.color = color;
-		this.board = game.getBoard();
 	}
 
 	public GamePieceColor getColor() {
@@ -22,15 +22,14 @@ public class Player implements Serializable {
 		return this.name;
 	}
 	
-	public void join(Game game) {
-		game.addPlayer(this);
+	public void setGame(Game game) {
+		this.game = game;
 	}
 	
 	public void move(int row, int column) {
-		board.put(this, row, column);
+		game.move(this, row, column);
 		
 	}
 	
 	
-
 }

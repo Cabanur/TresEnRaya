@@ -1,3 +1,4 @@
+package es.cabanur.tresenraya;
 
 public class GamePiece {
 	private GamePieceColor color;
