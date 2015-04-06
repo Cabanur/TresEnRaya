@@ -67,6 +67,23 @@ public class GameBoard implements Serializable {
 		}
 	}
 	
+	public String toString() {
+		
+		String ret = "+---+\n";
+		
+		for (GamePiece[] rows : squares) {
+			ret += "|";
+			for (GamePiece piece : rows) {
+				if (piece == null) ret += " ";
+				else ret += piece;
+			}
+			
+			ret += "|\n";
+		}
+		
+		ret += "+---+";
+		return ret;
+	}
 
 }
 	
