@@ -14,6 +14,10 @@ public class GamePiece {
 	public String toString() {
 		String ret;
 		switch (color) {
+		case NO_PIECE: {
+			ret = " ";
+			break;
+		}
 		case BLACK: {
 			ret = "X";
 			break;

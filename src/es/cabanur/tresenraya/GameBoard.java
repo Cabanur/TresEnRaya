@@ -1,10 +1,15 @@
 package es.cabanur.tresenraya;
 import java.io.Serializable;
 
-
+/** A GameBoard is a collection of {@link #squares} where you can
+ * {@link #put} {@link GamePiece}s.
+ * 
+ * @author Cabanur
+ *
+ */
 public class GameBoard implements Serializable {
 	
-	private static final long serialVersionUID = 201410030500L;
+	private static final long serialVersionUID = 201505072200L;
 	
 	/**
 	 * The actual gameboard is a 2D Matrix of "squares" where you can {@link #put()}
@@ -17,10 +22,10 @@ public class GameBoard implements Serializable {
 	 * (n,0) (n,1) ... (n,n)
 	 */
 	private GamePiece[][] squares;
-//	private Game game;
 	
 	/** 
-	 * Creates a new GameBoard of {@code height} rows and {@code width} columns.
+	 * Creates a new GameBoard of {@code height} rows and {@code width} columns
+	 * and fills it with {@link NoPiece}s.
 	 * 
 	 * Since these numbers will be directly
 	 * used to create an array, if any of the parameters are negative an
@@ -31,33 +36,36 @@ public class GameBoard implements Serializable {
 	 */
 	public GameBoard(int height, int width) {
 		this.squares = new GamePiece[height][width];
-//		this.game = game;
+		for (GamePiece[] row : squares) {
+			for (GamePiece square : row) {
+				square = new NoPiece();
+				
+			}
+		}
 	}
 
+	/**
+	 * @return the entire Board in it's current state.
+	 */
 	public GamePiece[][] getSquares() {
 		return this.squares;
 	}
 	
 	/**
-	 * Returns the GamePiece requested. Returns null if there is no
-	 * piece or the requested position is out of the Board.
+	 * Returns the GamePiece requested. 
 	 * 
 	 * @param row Row requested
 	 * @param col Column requested
-	 * @return The GamePiece in the requested position if there is, null otherwise.
+	 * @return The GamePiece in the requested position.
+	 * @throws IllegalArgumentException if row or col is out of bound.
 	 */
 	public GamePiece getSquare(int row, int col) {
 	
-		GamePiece ret;
+		if (row < 0 || row >= squares.length) throw new IllegalArgumentException("That column doesn't exist!");
+		if (col < 0 || col >= squares[row].length) throw new IllegalArgumentException("That row doesn't exist!");
 		
-		try {
-			ret = squares[row][col];
-		} catch (IndexOutOfBoundsException e) {
-			throw new IllegalArgumentException("The requested square (" + row + ", " + col + ") is outside"
-					+ "the Board");
-		}
+		return squares[row][col];
 		
-		return ret;
 		
 	}
 	
@@ -81,6 +89,19 @@ public class GameBoard implements Serializable {
 		}
 	}
 	
+	/**
+	 * Prints this Gameboard with spaces and nice things, like this: 
+	 * 
+	 * <pre>
+	 * +-------+
+	 * | X O X |
+	 * | O X O |
+	 * | X 0 X |
+	 * +-------+
+	 * </pre>
+	 * Such beautiful. Much wow.
+	 * 
+	 */
 	public String toString() {
 		
 		String ret = "+-------+\n";

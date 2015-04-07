@@ -92,45 +92,48 @@ public class Game implements Serializable {
 				/* Getting here means board.getSquare(secondRow, secondCol) gives back a valid 
 				 * square which may contain nothing (null) or a valid piece. When this valid
 				 * piece is of the same color as the reference, it's now a matching piece.
-				 * Once a matching piece is found, we need to check the next square in the 
-				 * same direction and the previous square in the opposite direction.
-				 * 
 				 */
 				
 				GamePieceColor playerColor = player.getColor();
+				GamePiece checkedPiece;
+				GamePieceColor checkedPieceColor;
 				try {
-					GamePiece checkedPiece = board.getSquare(secondRow, secondCol);
-					if (checkedPiece.getColor() == playerColor) {
-						/* Second step: check if there's another GamePiece of the
-						 * same color in the next square following the same 
-						 * direction.
-						 */
-						int thirdPieceRow = secondRow + rowDiff; // One step ahead in the same direction as second.
-						int otherThirdPieceRow = secondRow - 2 * rowDiff; // Two steps in the opposite direction as second
-						
-						int thirdPieceCol = secondCol + colDiff;
-						int otherThirdPieceCol = secondCol - 2 * colDiff;
-						if (board.getSquare(thirdPieceRow, thirdPieceCol).getColor() 
-								== playerColor
-								|| board.getSquare(otherThirdPieceRow, otherThirdPieceCol).getColor()
-								== playerColor) {
-							// We have a winner!
-							setWinner(player);
-							return;
-							
-						}
-					}
-				} catch (NullPointerException e) {
-					/* Tried to get the piece Color from an empty square. move on.
-					 */
-					System.err.println("Tried to get piece (" + rowDiff + ", " + secondCol + ").");
-					continue;
-				} catch (Exception e) {
-					// Shit happens. Move on.
-//					e.printStackTrace();
+					checkedPiece = board.getSquare(secondRow, secondCol);
+					checkedPieceColor = checkedPiece.getColor();
+				} catch (IllegalArgumentException e) {
+					System.err.println("Exception when trying to get the second piece".toString() + e);
 					continue;
 				}
-				
+				if (checkedPieceColor == playerColor) {
+					/* Once a matching piece is found, we need to check the next square in the 
+					 * same direction and the previous square in the opposite direction.
+					 */
+					int thirdPieceRow = secondRow + rowDiff; // One step ahead in the same direction as second.
+					int thirdPieceCol = secondCol + colDiff;
+
+					int otherThirdPieceRow = secondRow - 2 * rowDiff; // Two steps in the opposite direction as second
+					int otherThirdPieceCol = secondCol - 2 * colDiff;
+					
+					GamePiece thirdPiece;
+					GamePiece otherThirdPiece;
+					
+					try {
+						thirdPiece = board.getSquare(thirdPieceRow, thirdPieceCol);
+						otherThirdPiece = board.getSquare(otherThirdPieceRow, otherThirdPieceCol);
+					} catch (Exception e) {
+						System.err.println("Exception when trying to get possible third pieces.\n" + e);
+						continue;
+					}
+					
+					if ( (thirdPiece.getColor() == playerColor)
+							|| (otherThirdPiece.getColor() == playerColor) ) {
+						// We have a winner!
+						setWinner(player);
+						return;
+					
+					}
+					
+				}
 			}
 		}
 	}
