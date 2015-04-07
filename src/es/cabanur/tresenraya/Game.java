@@ -76,44 +76,65 @@ public class Game implements Serializable {
 		/* First step: checking if any of the surrounding squares to this move
 		 * has another GamePiece of the same color.
 		 */
-		for (int secondRow = refRow - 1; secondRow <= refRow + 1; secondRow++) {
+		for (int rowDiff = - 1; rowDiff <= 1; rowDiff++) {
+			int secondRow = refRow + rowDiff;
 			// when scanning for a row out of range, ignore.
-			if (secondRow < 0 || secondRow >= board.getSquares().length) continue; 
+			if ((secondRow < 0) || (secondRow >= board.getSquares().length)) continue;
 			
-			for (int secondCol = refCol - 1; secondCol <= refCol + 1; secondCol++) {
+			for (int colDiff = -1; colDiff <= 1; colDiff++) {
+				int secondCol = refCol + colDiff;
 				// when scanning for a column out of range, ignore.
 				if (secondCol < 0 || secondCol >= board.getSquares()[secondRow].length) continue;
 				
-				if (secondRow == refRow && secondCol == refCol) continue; // Skip the reference Piece.
+				// Skip the reference Piece.
+				if (rowDiff == 0 && colDiff == 0) continue; 
+				
+				/* Getting here means board.getSquare(secondRow, secondCol) gives back a valid 
+				 * square which may contain nothing (null) or a valid piece. When this valid
+				 * piece is of the same color as the reference, it's now a matching piece.
+				 * Once a matching piece is found, we need to check the next square in the 
+				 * same direction and the previous square in the opposite direction.
+				 * 
+				 */
+				
+				GamePieceColor playerColor = player.getColor();
 				try {
-					if (board.getSquare(secondRow,secondCol).getColor() == board.getSquare(refRow, refCol).getColor()) {
+					GamePiece checkedPiece = board.getSquare(secondRow, secondCol);
+					if (checkedPiece.getColor() == playerColor) {
 						/* Second step: check if there's another GamePiece of the
 						 * same color in the next square following the same 
 						 * direction.
 						 */
-						int thirdPieceRow = 2 * secondRow - refRow;
+						int thirdPieceRow = secondRow + rowDiff; // One step ahead in the same direction as second.
+						int otherThirdPieceRow = secondRow - 2 * rowDiff; // Two steps in the opposite direction as second
 						
-						int thirdPieceCol = 2 * secondCol - refCol;
+						int thirdPieceCol = secondCol + colDiff;
+						int otherThirdPieceCol = secondCol - 2 * colDiff;
 						if (board.getSquare(thirdPieceRow, thirdPieceCol).getColor() 
-								== board.getSquare(refRow, refCol).getColor()
-								|| board.getSquare(thirdPieceRow * -1, thirdPieceCol * -1).getColor()
-								== board.getSquare(refRow, refCol).getColor()) {
+								== playerColor
+								|| board.getSquare(otherThirdPieceRow, otherThirdPieceCol).getColor()
+								== playerColor) {
 							// We have a winner!
 							setWinner(player);
-							break;
+							return;
 							
 						}
 					}
 				} catch (NullPointerException e) {
 					/* Tried to get the piece Color from an empty square. move on.
 					 */
-					System.err.println("Tried to get a piece from a non-valid or empty square (" 
-							+ secondRow + ", " + secondCol + ").");
+					System.err.println("Tried to get piece (" + rowDiff + ", " + secondCol + ").");
+					continue;
+				} catch (Exception e) {
+					// Shit happens. Move on.
+//					e.printStackTrace();
 					continue;
 				}
 				
 			}
 		}
 	}
+	
+	
 	
 }
