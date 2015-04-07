@@ -74,7 +74,6 @@ public class GameBoard implements Serializable {
 		
 		if (squares[row][column] == null) {
 			squares[row][column] = new GamePiece(color);
-//			checkMove(player, row, column);
 		} else {
 			throw new IllegalArgumentException("The square " + row + ", " + column 
 					+ " has already been played");
@@ -83,19 +82,20 @@ public class GameBoard implements Serializable {
 	
 	public String toString() {
 		
-		String ret = "+---+\n";
+		String ret = "+-------+\n";
 		
 		for (GamePiece[] rows : squares) {
-			ret += "|";
+			ret += "| ";
 			for (GamePiece piece : rows) {
 				if (piece == null) ret += " ";
 				else ret += piece;
+				ret += " ";
 			}
 			
 			ret += "|\n";
 		}
 		
-		ret += "+---+";
+		ret += "+-------+";
 		return ret;
 	}
 

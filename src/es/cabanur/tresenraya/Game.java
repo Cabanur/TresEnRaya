@@ -69,24 +69,34 @@ public class Game implements Serializable {
 	}
 	
 	void move(Player player, int refRow, int refCol) {
+		// ref stands for reference, since it's the reference piece against which we'll be checking others.
+		
 		board.put(player.getColor(), refRow, refCol);
 
 		/* First step: checking if any of the surrounding squares to this move
 		 * has another GamePiece of the same color.
 		 */
-		for (int r = refRow - 1; r <= refRow + 1; r++) {
-			for (int c = refCol - 1; c <= refCol + 1; c++) {
-				if (r == refRow && c == refCol) continue; // Skip the reference Piece.
+		for (int secondRow = refRow - 1; secondRow <= refRow + 1; secondRow++) {
+			// when scanning for a row out of range, ignore.
+			if (secondRow < 0 || secondRow >= board.getSquares().length) continue; 
+			
+			for (int secondCol = refCol - 1; secondCol <= refCol + 1; secondCol++) {
+				// when scanning for a column out of range, ignore.
+				if (secondCol < 0 || secondCol >= board.getSquares()[secondRow].length) continue;
+				
+				if (secondRow == refRow && secondCol == refCol) continue; // Skip the reference Piece.
 				try {
-					if (board.getSquare(r,c).getColor() == board.getSquare(refRow, refCol).getColor()) {
+					if (board.getSquare(secondRow,secondCol).getColor() == board.getSquare(refRow, refCol).getColor()) {
 						/* Second step: check if there's another GamePiece of the
 						 * same color in the next square following the same 
 						 * direction.
 						 */
-						int thirdPieceRow = 2 * r - refRow;
+						int thirdPieceRow = 2 * secondRow - refRow;
 						
-						int thirdPieceCol = 2 * c - refCol;
+						int thirdPieceCol = 2 * secondCol - refCol;
 						if (board.getSquare(thirdPieceRow, thirdPieceCol).getColor() 
+								== board.getSquare(refRow, refCol).getColor()
+								|| board.getSquare(thirdPieceRow * -1, thirdPieceCol * -1).getColor()
 								== board.getSquare(refRow, refCol).getColor()) {
 							// We have a winner!
 							setWinner(player);
@@ -97,6 +107,8 @@ public class Game implements Serializable {
 				} catch (NullPointerException e) {
 					/* Tried to get the piece Color from an empty square. move on.
 					 */
+					System.err.println("Tried to get a piece from a non-valid or empty square (" 
+							+ secondRow + ", " + secondCol + ").");
 					continue;
 				}
 				
