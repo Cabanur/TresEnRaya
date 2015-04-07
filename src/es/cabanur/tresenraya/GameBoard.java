@@ -38,12 +38,26 @@ public class GameBoard implements Serializable {
 		return this.squares;
 	}
 	
+	/**
+	 * Returns the GamePiece requested. Returns null if there is no
+	 * piece or the requested position is out of the Board.
+	 * 
+	 * @param row Row requested
+	 * @param col Column requested
+	 * @return The GamePiece in the requested position if there is, null otherwise.
+	 */
 	public GamePiece getSquare(int row, int col) {
-		if (row >= squares.length) row = squares.length - 1;
-		if (row <= 0) row = 0;
-		if (col >= squares[row].length) col = squares[row].length - 1;
-		if (col <= 0) col = 0;
-		return squares[row][col];
+	
+		GamePiece ret;
+		
+		try {
+			ret = squares[row][col];
+		} catch (IndexOutOfBoundsException e) {
+			ret = null;
+		}
+		
+		return ret;
+		
 	}
 	
 	/** 
@@ -63,7 +77,7 @@ public class GameBoard implements Serializable {
 //			checkMove(player, row, column);
 		} else {
 			throw new IllegalArgumentException("The square " + row + ", " + column 
-					+ "has already been played");
+					+ " has already been played");
 		}
 	}
 	

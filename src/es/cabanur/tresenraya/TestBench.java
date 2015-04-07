@@ -26,6 +26,8 @@ public class TestBench {
 			}
 		}
 		
+		System.out.println(game.getWinner() + " wins!");
+		
 		stdin.close();
 		
 	}

@@ -56,6 +56,10 @@ public class Game implements Serializable {
 		
 	}
 	
+	public Player getWinner() {
+		return this.winner;
+	}
+	
 	public void setBoard(GameBoard board) {
 		this.board = board;
 	}
@@ -72,19 +76,21 @@ public class Game implements Serializable {
 		 */
 		for (int r = refRow - 1; r <= refRow + 1; r++) {
 			for (int c = refCol - 1; c <= refCol + 1; c++) {
-				if (r == 0 && c == 0) continue; // Skip the reference Piece.
+				if (r == refRow && c == refCol) continue; // Skip the reference Piece.
 				try {
 					if (board.getSquare(r,c).getColor() == board.getSquare(refRow, refCol).getColor()) {
 						/* Second step: check if there's another GamePiece of the
 						 * same color in the next square following the same 
 						 * direction.
 						 */
-						int secondPieceRow = refRow + 2 * r;
-						int secondPieceCol = refCol + 2 * c;
-						if (board.getSquare(secondPieceRow, secondPieceCol).getColor() 
+						int thirdPieceRow = 2 * r - refRow;
+						
+						int thirdPieceCol = 2 * c - refCol;
+						if (board.getSquare(thirdPieceRow, thirdPieceCol).getColor() 
 								== board.getSquare(refRow, refCol).getColor()) {
 							// We have a winner!
 							setWinner(player);
+							break;
 							
 						}
 					}
