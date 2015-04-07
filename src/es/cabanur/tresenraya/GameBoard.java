@@ -53,7 +53,8 @@ public class GameBoard implements Serializable {
 		try {
 			ret = squares[row][col];
 		} catch (IndexOutOfBoundsException e) {
-			ret = null;
+			throw new IllegalArgumentException("The requested square (" + row + ", " + col + ") is outside"
+					+ "the Board");
 		}
 		
 		return ret;
