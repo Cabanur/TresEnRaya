@@ -1,5 +1,6 @@
 package es.cabanur.tresenraya;
 import java.io.Serializable;
+import java.util.Arrays;
 
 
 public class Game implements Serializable {
@@ -17,13 +18,6 @@ public class Game implements Serializable {
 	
 	public void addPlayer(Player newPlayer) {
 		boolean added = false;
-//		for (Player p : players) {
-//			if (p == null && added == false) {
-//				p = newPlayer;
-//				p.setGame(this);
-//				added = true;
-//			}
-//		}
 		for (int i = 0; i < players.length; i++) {
 			if (players[i] == null && added == false) {
 				players[i] = newPlayer;
@@ -78,32 +72,30 @@ public class Game implements Serializable {
 		 */
 		for (int rowDiff = - 1; rowDiff <= 1; rowDiff++) {
 			int secondRow = refRow + rowDiff;
-			// when scanning for a row out of range, ignore.
+			// when scanning for a row out of range, skip.
 			if ((secondRow < 0) || (secondRow >= board.getSquares().length)) continue;
 			
 			for (int colDiff = -1; colDiff <= 1; colDiff++) {
 				int secondCol = refCol + colDiff;
-				// when scanning for a column out of range, ignore.
+				// when scanning for a column out of range, skip.
 				if (secondCol < 0 || secondCol >= board.getSquares()[secondRow].length) continue;
 				
 				// Skip the reference Piece.
 				if (rowDiff == 0 && colDiff == 0) continue; 
 				
 				/* Getting here means board.getSquare(secondRow, secondCol) gives back a valid 
-				 * square which may contain nothing (null) or a valid piece. When this valid
-				 * piece is of the same color as the reference, it's now a matching piece.
+				 * square which contains a GamePiece. When this valid
+				 * piece is of the same color as the reference, it becomes a matching piece.
 				 */
 				
 				GamePieceColor playerColor = player.getColor();
 				GamePiece checkedPiece;
 				GamePieceColor checkedPieceColor;
-				try {
-					checkedPiece = board.getSquare(secondRow, secondCol);
-					checkedPieceColor = checkedPiece.getColor();
-				} catch (IllegalArgumentException e) {
-					System.err.println("Exception when trying to get the second piece".toString() + e);
-					continue;
-				}
+				checkedPiece = board.getSquare(secondRow, secondCol);
+				checkedPieceColor = checkedPiece.getColor();
+				
+				if (checkedPieceColor == GamePieceColor.NO_PIECE) continue;
+				
 				if (checkedPieceColor == playerColor) {
 					/* Once a matching piece is found, we need to check the next square in the 
 					 * same direction and the previous square in the opposite direction.
@@ -116,12 +108,10 @@ public class Game implements Serializable {
 					
 					GamePiece thirdPiece;
 					GamePiece otherThirdPiece;
-					
 					try {
 						thirdPiece = board.getSquare(thirdPieceRow, thirdPieceCol);
 						otherThirdPiece = board.getSquare(otherThirdPieceRow, otherThirdPieceCol);
-					} catch (Exception e) {
-						System.err.println("Exception when trying to get possible third pieces.\n" + e);
+					} catch (IndexOutOfBoundsException e) {
 						continue;
 					}
 					

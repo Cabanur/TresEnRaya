@@ -36,9 +36,9 @@ public class GameBoard implements Serializable {
 	 */
 	public GameBoard(int height, int width) {
 		this.squares = new GamePiece[height][width];
-		for (GamePiece[] row : squares) {
-			for (GamePiece square : row) {
-				square = new NoPiece();
+		for (int row = 0; row < squares.length; row++) {
+			for (int col = 0; col < squares[row].length; col++) {
+				squares[row][col] = new NoPiece();
 				
 			}
 		}
@@ -61,8 +61,8 @@ public class GameBoard implements Serializable {
 	 */
 	public GamePiece getSquare(int row, int col) {
 	
-		if (row < 0 || row >= squares.length) throw new IllegalArgumentException("That column doesn't exist!");
-		if (col < 0 || col >= squares[row].length) throw new IllegalArgumentException("That row doesn't exist!");
+		if (row < 0 || row >= squares.length) throw new IndexOutOfBoundsException("That column doesn't exist!");
+		if (col < 0 || col >= squares[row].length) throw new IndexOutOfBoundsException("That row doesn't exist!");
 		
 		return squares[row][col];
 		
@@ -81,7 +81,7 @@ public class GameBoard implements Serializable {
 	 */
 	public void put(GamePieceColor color, int row, int column) {
 		
-		if (squares[row][column] == null) {
+		if (squares[row][column] instanceof NoPiece) {
 			squares[row][column] = new GamePiece(color);
 		} else {
 			throw new IllegalArgumentException("The square " + row + ", " + column 
